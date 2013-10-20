@@ -3,7 +3,7 @@
 """
 Problem 15
 Count the number of routes through a lattice graph.
-http://projecteuler.net/problem=13
+http://projecteuler.net/problem=15
 """
 
 # Lattice paths can be represented as a bitfield where each bit represents
