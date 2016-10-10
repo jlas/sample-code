@@ -12,6 +12,7 @@ int main() {
   Node * nodes = malloc(sizeof(struct Node)*size);
   Node * tmpnodes;
 
+  // Read data from a file line by line
   while (fscanf(stdin, "%lf,%lf,%lf", &x, &y, &data) == 3) {
     nodes[count].x = x;
     nodes[count].y = y;

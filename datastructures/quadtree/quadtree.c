@@ -4,7 +4,7 @@
 #include <strings.h>
 #include "quadtree.h"
 
-int QT_CAPACITY = 1;
+int QT_CAPACITY = 16;
 
 int containsPoint(AABB boundary, XY xy) {
   return ((fabs(xy.x - boundary.center.x) <= boundary.halfDimension) &&
@@ -19,6 +19,9 @@ void initTree(QuadTree * qt, double x, double y, double halfDimension) {
   qt->nodes = (Node **) malloc(sizeof(Node *)*QT_CAPACITY);
 }
 
+/**
+ * Subdivide an existing tree
+ */
 void subdivide(QuadTree * qt) {
   int i;
 
@@ -28,6 +31,7 @@ void subdivide(QuadTree * qt) {
   double s = (qt->boundary.center.y - halfHalf);
   double e = (qt->boundary.center.x - halfHalf);
 
+  // Create and initialize subtrees
   qt->northWest = (QuadTree *) malloc(sizeof(QuadTree));
   initTree(qt->northWest, w, n, halfHalf);
   qt->northEast = (QuadTree *) malloc(sizeof(QuadTree));
@@ -37,6 +41,7 @@ void subdivide(QuadTree * qt) {
   qt->southEast = (QuadTree *) malloc(sizeof(QuadTree));
   initTree(qt->southEast, e, s, halfHalf);
 
+  // Iterate through children and place in correct subtree
   for (i = 0; i < qt->nnodes; i++) {
     if (insert(qt->northWest, qt->nodes[i])) continue;
     if (insert(qt->northEast, qt->nodes[i])) continue;
@@ -44,11 +49,18 @@ void subdivide(QuadTree * qt) {
     if (insert(qt->southEast, qt->nodes[i])) continue;
   }
 
+  // Mark this tree as a "non leaf" tree and free space for nodes
   qt->nnodes = QT_NONLEAF;
   free(qt->nodes);
   qt->nodes = NULL;
 }
 
+/*
+ * Insert a node into a quadtree
+ * Returns:
+ *   0 if not inserted
+ *   1 if successfully inserted
+ */
 int insert(QuadTree * qt, Node * node) {
 
   XY xy;
@@ -77,6 +89,9 @@ int insert(QuadTree * qt, Node * node) {
   return 0;
 }
 
+/**
+ * Make a root tree and insert nodes one by one. Return the root tree.
+ */
 QuadTree * makeTree(Node *nodes, int N) {
   QuadTree * qt;
   int i;
