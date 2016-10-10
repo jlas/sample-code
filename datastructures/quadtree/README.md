@@ -2,6 +2,7 @@
 
 Basic quadtree based on [this](https://en.wikipedia.org/wiki/Quadtree#Pseudo_code)
 
+![quadtree](https://raw.github.com/jlas/sample-code/master/datastructures/quadtree/media/example.png)
 
 To test it, start with a dataset in .csv format e.g.:
 
