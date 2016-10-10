@@ -4,7 +4,7 @@
 #include <strings.h>
 #include "quadtree.h"
 
-int QT_CAPACITY = 12;
+int QT_CAPACITY = 1;
 
 int containsPoint(AABB boundary, XY xy) {
   return ((fabs(xy.x - boundary.center.x) <= boundary.halfDimension) &&
@@ -91,12 +91,14 @@ QuadTree * makeTree(Node *nodes, int N) {
     y = nodes[i].y;
     if (x < minX) {
       minX = x;
-    } else if (x > maxX) {
+    }
+    if (x > maxX) {
       maxX = x;
     }
     if (y < minY) {
       minY = y;
-    } else if (y > maxY) {
+    }
+    if (y > maxY) {
       maxY = y;
     }
   }
