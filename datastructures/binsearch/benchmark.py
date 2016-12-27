@@ -6,6 +6,9 @@ import pandas as pd
 
 OUTFILE = 'perf.out'
 
+# benchmark -t option
+BENCH_REPS = 1000000
+
 metrics = {
     'seconds_elapsed': 'seconds time elapsed',
     'L1_cache_misses': 'L1-dcache-load-misses'
@@ -47,7 +50,7 @@ configs = [
         'veb': False
     }, {
         'label': 'bs',
-        'bench_reps': 1,
+        'bench_reps': BENCH_REPS,
         'veb': False
     }, {
         'label': 'veb_baseline',
@@ -55,14 +58,14 @@ configs = [
         'veb': True
     }, {
         'label': 'veb',
-        'bench_reps': 1,
+        'bench_reps': BENCH_REPS,
         'veb': True
     }
 ]
 
 def main():
     df = pd.DataFrame()
-    for i in [20,22]:
+    for i in range(20,28):
         seed = 1
         d = {}
         d['nelements'] = 2**i - 1
@@ -71,6 +74,8 @@ def main():
                           veb=cfg['veb'], seed=seed)
             d.update(dict([(cfg['label']+'_'+k,v) for k, v in d2.items()]))
         df = df.append(d, ignore_index=True)
+        df.to_csv('results.csv')
+
     for metric in metrics.keys():
         df['diff_bs_'+metric] = df['bs_'+metric] - df['bs_baseline_'+metric]
         df['diff_veb_'+metric] = df['veb_'+metric] - df['veb_baseline_'+metric]
