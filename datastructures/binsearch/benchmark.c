@@ -19,7 +19,6 @@ int main (int argc, char* argv[]) {
   int N = 1L << 20;
   int T = 1;
   int i = 0;
-  int r;
   int use_veb = 0;
   int option_char;
   time_t seed = time(NULL);
@@ -66,7 +65,7 @@ int main (int argc, char* argv[]) {
   }
 
   for (i = 0; i < T; i++) {
-    r = rand();
+    bsfn(arr, rand(), 0, N);
   }
 
   free(inarr);
