@@ -65,7 +65,7 @@ int main (int argc, char* argv[]) {
   }
 
   for (i = 0; i < T; i++) {
-    bsfn(arr, rand(), 0, N);
+    bsfn(inarr, rand(), 0, N);
   }
 
   free(inarr);
