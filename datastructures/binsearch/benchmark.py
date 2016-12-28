@@ -1,5 +1,6 @@
 #!/bin/env python
 
+import re
 import subprocess
 
 import pandas as pd
@@ -7,7 +8,7 @@ import pandas as pd
 OUTFILE = 'perf.out'
 
 # benchmark -t option
-BENCH_REPS = 1000000
+BENCH_REPS = 10000000
 
 metrics = {
     'seconds_elapsed': 'seconds time elapsed',
@@ -17,13 +18,17 @@ metrics = {
 def parse_output():
     with open(OUTFILE) as f:
         out = f.read()
-    split = lambda line: list(map(lambda s: s.replace(',','').strip(), line.split()))[0]
+    def split(line):
+        nums = map(lambda s: re.match('[0-9\.]+', s), line.replace(',','').split())
+        return list(map(lambda r: float(r.group()), filter(bool, nums)))
     d = {}
     lines = out.splitlines()
     for line in lines:
         for label, snippet in metrics.items():
             if snippet in line:
-                d[label] = float(split(line))
+                val, std = split(line)
+                d[label] = val
+                d[label+'_std'] = std
     return d
 
 def exec_cmd(nelements, bench_reps=1, perf_reps=10, veb=False, seed=None):
@@ -33,14 +38,16 @@ def exec_cmd(nelements, bench_reps=1, perf_reps=10, veb=False, seed=None):
     seed_opt = []
     if seed:
         seed_opt = ['-s', '{}'.format(seed)]
-    subprocess.check_call(['perf', 'stat',
-                           '-o', OUTFILE,
-                           '-r', str(perf_reps),
-                           '-e', 'L1-dcache-load-misses',
-                           './benchmark',
-                           veb_flag,
-                           '-n', str(nelements),
-                           '-t', str(bench_reps)] + seed_opt)
+    cmd = ['perf', 'stat',
+           '-o', OUTFILE,
+           '-r', str(perf_reps),
+           '-e', 'L1-dcache-load-misses',
+           './benchmark',
+           veb_flag,
+           '-n', str(nelements),
+           '-t', str(bench_reps)] + seed_opt
+    print(' '.join(cmd))
+    subprocess.check_call(cmd)
     return parse_output()
 
 configs = [
@@ -75,11 +82,6 @@ def main():
             d.update(dict([(cfg['label']+'_'+k,v) for k, v in d2.items()]))
         df = df.append(d, ignore_index=True)
         df.to_csv('results.csv')
-
-    for metric in metrics.keys():
-        df['diff_bs_'+metric] = df['bs_'+metric] - df['bs_baseline_'+metric]
-        df['diff_veb_'+metric] = df['veb_'+metric] - df['veb_baseline_'+metric]
-    df.to_csv('results.csv')
 
 if __name__ == '__main__':
     subprocess.check_call('make clean benchmark', shell=True)
