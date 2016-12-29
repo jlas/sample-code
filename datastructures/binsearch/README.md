@@ -37,6 +37,41 @@ large to fit in RAM.
 
 ![time_elapsed](https://raw.githubusercontent.com/jlas/sample-code/master/datastructures/binsearch/experiments/media/time_elapsed.png)
 
+## van Emde Boas Layout
+
+Not to be confused with the [van Emde Boas tree](https://en.wikipedia.org/wiki/Van_Emde_Boas_tree),
+the layout is a way to encode a binary tree in an 1 dimensional array. This
+scheme has also been called a "height partitioned layout" by Ronn [1]. Compare
+the two layouts below (the node values are indices in an encoded 1D array):
+
+### Inorder layout
+
+<pre>
+          8
+         / \
+       /     \
+     /         \
+    4           12
+   /  \        /  \
+  2    6      10   14
+ /\    /\    /\    /\
+1  3  5  7  9  11 13 15
+</pre>
+
+### vEB Layout
+
+<pre>
+          1
+         / \
+       /     \
+     /         \
+    2           3
+   /  \        /  \
+  4    7      10   13
+ /\    /\    /\    /\
+5  6  8  9  11 12 14 15
+</pre>
+
 ## Cache Oblivious Algorithms
 
 The goal of [Cache Oblivious algorithms](https://en.wikipedia.org/wiki/Cache-oblivious_algorithm)
@@ -44,3 +79,5 @@ is to efficiently use data in a CPU cache and reduce unnecessary swapping of
 data between slow to fast memory. The big win of a cache oblivious algo is that
 this efficiency works at any level of a memory hierarchy, e.g. from RAM to CPU
 cache or from Hard Disk to RAM.
+
+[1] Rønn, Frederik. Cache-oblivious searching and sorting. Diss. Master’s thesis, University of Copenhagen, 2003.
