@@ -31,11 +31,11 @@ large to fit in RAM.
 
 ### Cache Misses
 
-![cache_misses](https://raw.githubusercontent.com/jlas/sample-code/master/datastructures/binsearch/media/cache_misses.png)
+![cache_misses](https://raw.githubusercontent.com/jlas/sample-code/master/datastructures/binsearch/experiments/media/cache_misses.png)
 
 ### Running time
 
-![time_elapsed](https://raw.githubusercontent.com/jlas/sample-code/master/datastructures/binsearch/media/time_elapsed.png)
+![time_elapsed](https://raw.githubusercontent.com/jlas/sample-code/master/datastructures/binsearch/experiments/media/time_elapsed.png)
 
 ## Cache Oblivious Algorithms
 
